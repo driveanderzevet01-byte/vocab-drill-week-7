@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Vocab Drill | Week 7 (Days 19-21) | Proctored Assessment</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0a0c15;
+            font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+            color: #e2e8f0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: #11131f;
+            border-radius: 32px;
+            padding: 24px 28px;
+            border: 1px solid #252a41;
+            box-shadow: 0 20px 35px -10px rgba(0,0,0,0.6);
+        }
+
+        h1, h2, h3 {
+            font-weight: 600;
+            letter-spacing: -0.3px;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #a78bfa, #38bdf8);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-size: 2rem;
+        }
+
+        .timer-panel {
+            background: #0b0d16;
+            padding: 12px 24px;
+            border-radius: 60px;
+            display: inline-flex;
+            align-items: baseline;
+            gap: 16px;
+            margin-bottom: 24px;
+            border-left: 5px solid #facc15;
+            font-weight: 600;
+        }
+
+        .timer {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 2rem;
+            font-weight: 700;
+            color: #facc15;
+            background: #00000030;
+            padding: 0 12px;
+            border-radius: 40px;
+        }
+
+        .card {
+            background: #151b2b;
+            border-radius: 28px;
+            padding: 24px;
+            margin-bottom: 28px;
+            border: 1px solid #2d3450;
+        }
+
+        label {
+            font-weight: 500;
+            display: block;
+            margin-top: 14px;
+            margin-bottom: 6px;
+            color: #b9c3e0;
+        }
+
+        input, select {
+            background: #0a0e1a;
+            border: 1px solid #2f3a5c;
+            padding: 12px 16px;
+            border-radius: 20px;
+            width: 100%;
+            color: #f1f5f9;
+            font-size: 1rem;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #818cf8;
+            box-shadow: 0 0 0 2px rgba(129,140,248,0.3);
+        }
+
+        button {
+            background: #2d3a5e;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 40px;
+            font-weight: 600;
+            color: white;
+            cursor: pointer;
+            transition: 0.2s;
+            margin-top: 20px;
+            margin-right: 12px;
+        }
+
+        button.primary {
+            background: #4f46e5;
+            box-shadow: 0 4px 14px rgba(79,70,229,0.4);
+        }
+
+        button.primary:hover {
+            background: #6366f1;
+            transform: scale(0.98);
+        }
+
+        button.danger {
+            background: #dc2626;
+        }
+
+        .vocab-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 12px;
+            max-height: 500px;
+            overflow-y: auto;
+            padding-right: 8px;
+        }
+
+        .vocab-item {
+            background: #1a1f33;
+            padding: 12px 16px;
+            border-radius: 20px;
+            border-left: 4px solid #818cf8;
+        }
+
+        .vocab-word {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #facc15;
+        }
+
+        .question-card {
+            background: #13182a;
+            padding: 18px;
+            border-radius: 24px;
+            margin-bottom: 16px;
+            border: 1px solid #293054;
+        }
+
+        .question-text {
+            font-weight: 600;
+            margin-bottom: 12px;
+            font-size: 1rem;
+        }
+
+        .options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 8px;
+        }
+
+        .option label {
+            margin: 0;
+            font-weight: normal;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .wordbank-box {
+            background: #0c1020;
+            padding: 18px;
+            border-radius: 24px;
+            margin: 20px 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            border: 1px solid #2d3a66;
+        }
+
+        .wordbank-word {
+            background: #1e2a4a;
+            padding: 6px 18px;
+            border-radius: 40px;
+            font-weight: 600;
+            font-family: monospace;
+            font-size: 0.9rem;
+        }
+
+        .popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.95);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+
+        .popup-card {
+            background: #1a1f2e;
+            max-width: 900px;
+            width: 95%;
+            max-height: 85vh;
+            overflow-y: auto;
+            padding: 28px;
+            border-radius: 36px;
+            box-shadow: 0 25px 40px black;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .answer-summary {
+            background: #0e1222;
+            padding: 16px;
+            border-radius: 24px;
+            font-family: 'Segoe UI', system-ui, monospace;
+            font-size: 0.85rem;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .summary-question {
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #2a3250;
+        }
+
+        .summary-question strong {
+            color: #facc15;
+        }
+
+        .summary-answer {
+            margin-left: 20px;
+            color: #a5b4fc;
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+                margin: 0;
+            }
+            .no-print, .timer-panel, button, .popup, #summaryPopup {
+                display: none !important;
+            }
+            .print-pattern {
+                background: repeating-linear-gradient(45deg, #f0f2f5 0px, #f0f2f5 3px, #ffffff 3px, #ffffff 15px);
+                padding: 20px;
+            }
+            .container {
+                background: white;
+                color: black;
+                box-shadow: none;
+            }
+            .answer-summary {
+                background: #f8f9fc;
+                border: 1px solid #ccc;
+                color: black;
+            }
+            .summary-question strong {
+                color: #1e293b;
+            }
+            .summary-answer {
+                color: #334155;
+            }
+        }
+
+        footer {
+            font-size: 0.7rem;
+            text-align: center;
+            margin-top: 25px;
+            color: #5a668a;
+        }
+        hr {
+            border-color: #2a3250;
+        }
+        .section-title {
+            margin: 20px 0 15px 0;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #4f46e5;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+<div class="container" id="appRoot">
+    <!-- LOGIN PAGE -->
+    <div id="loginPage">
+        <div class="card" style="max-width: 550px; margin: 40px auto;">
+            <h1 class="gradient-text">📘 VOCAB DRILL</h1>
+            <p style="margin: 8px 0 20px 0;">Week 7 - Proctored vocabulary assessment (Days 19, 20, 21)</p>
+            <label>Student Name</label>
+            <input type="text" id="studentName" placeholder="e.g., Ahmad Fauzi">
+            <label>Student ID</label>
+            <input type="text" id="studentId" placeholder="e.g., 22051234">
+            <label>Study Program</label>
+            <input type="text" id="studyProgram" placeholder="e.g., English Literature">
+            <label>Select Day</label>
+            <select id="daySelect">
+                <option value="day19">Day 19 (Vocabulary 1801-1900)</option>
+                <option value="day20">Day 20 (Vocabulary 1901-2000)</option>
+                <option value="day21">Day 21 (Vocabulary 2001-2100)</option>
+            </select>
+            <button class="primary" id="startBtn" style="width: 100%; margin-top: 28px;">▶ Begin Session</button>
+        </div>
+    </div>
+
+    <!-- VOCAB LIST PAGE (5 min timer) -->
+    <div id="vocabListPage" class="hidden">
+        <div class="timer-panel no-print">
+            <span>📖 Review mode:</span>
+            <span class="timer" id="listTimer">05:00</span>
+            <span>time left</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+            <h2>📚 Vocabulary List: <span id="listDayLabel"></span></h2>
+            <button id="proceedToDrillBtn" class="primary">➡ Proceed to Drill</button>
+        </div>
+        <div class="vocab-grid" id="vocabListContainer"></div>
+    </div>
+
+    <!-- DRILL PAGE (25 min timer) -->
+    <div id="drillPage" class="hidden">
+        <div class="timer-panel no-print">
+            <span>✍️ Drill in progress:</span>
+            <span class="timer" id="drillTimer">25:00</span>
+            <span>auto-submit at 0</span>
+        </div>
+        <div id="drillQuestionsContainer"></div>
+        <div style="margin: 20px 0;">
+            <button id="submitDrillBtn" class="primary">✅ Submit Exam & Show Summary</button>
+        </div>
+    </div>
+
+    <!-- SUMMARY + PRINT POPUP -->
+    <div id="summaryPopup" class="popup hidden">
+        <div class="popup-card">
+            <h3>📄 Submission Summary (Questions & Answers)</h3>
+            <div id="summaryContent" class="answer-summary"></div>
+            <div style="margin-top: 20px; display: flex; gap: 12px; flex-wrap: wrap;">
+                <button id="closeSummaryBtn" class="danger">Close</button>
+                <button id="printSummaryBtn" class="primary">🖨️ Print / Save as PDF</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ======================= FULL VOCAB DATABASE (from file - Week 7) =======================
+    const fullVocab = [];
+
+    function pushEntries(arr) {
+        for (let i = 0; i < arr.length; i += 3) {
+            fullVocab.push({ word: arr[i], eng: arr[i+1], ind: arr[i+2] });
+        }
+    }
+
+    // DAY 19 (1801-1900)
+    const day19Raw = ["deadly","fatal","mematikan","deal","agreement; to handle","kesepakatan; menangani","dealer","seller","pedagang","dearth","scarcity","kelangkaan","death's-head","skull","tengkorak","debase","to degrade","merendahkan","debatable","questionable","diperdebatkan","debate","discussion","debat","debonair","charming","menawan","debut","first appearance","debut","decade","ten years","dekade","decadence","moral decline","dekadensi","decagon","ten-sided shape","dekagon","decagram","ten grams","dekagram","decaliter","ten liters","dekaliter","decalogue","Ten Commandments","Sepuluh Perintah Allah","Decameron","literary work","Dekameron","decameter","ten meters","dekameter","decamp","to leave suddenly","meninggalkan mendadak","decapitate","to behead","memenggal","decapod","ten-footed","berkaki sepuluh","decasyllable","ten-syllable line","sepuluh suku kata","decay","to rot","membusuk","deceit","deception","penipuan","deceitful","dishonest","penipu","deceive","to mislead","menipu","decency","propriety","kesopanan","decent","proper","sopan","decided","definite","pasti","deciduous","shedding leaves","menggugurkan daun","decimal","ten-based","desimal","decimate","to destroy large part","menghancurkan sebagian","decipher","to decode","menguraikan","decision","choice","keputusan","decisive","conclusive","tegas","declamation","dramatic speech","deklamasi","declamatory","rhetorical","retoris","declarative","stating","deklaratif","declare","to announce","menyatakan","declension","grammatical inflection","deklinasi","decline","to decrease; to refuse","menurun; menolak","decorate","to adorn","menghias","decoration","ornament","dekorasi","decorous","proper","pantas","decoy","lure","umpan","decrease","to reduce","mengurangi","decrepit","worn out","lapuk","dedicate","to devote","mendedikasikan","dedicated","committed","berdedikasi","dedication","devotion","dedikasi","deduce","to conclude","menyimpulkan","deduct","to subtract","mengurangi","deface","to vandalize","merusak","defalcate","to embezzle","menggelapkan","defamation","slander","fitnah","defame","to slander","memfitnah","default","failure to act","kelalaian","defeat","to lose","mengalahkan; kekalahan","defeated","beaten","kalah","defect","flaw","cacat","defection","desertion","pembelotan","defective","faulty","cacat","defend","to protect","membela","defendant","accused person","terdakwa","defensible","justifiable","dapat dipertahankan","defensive","protective","defensif","defer","to postpone; to yield","menunda; menurut","deference","respect","rasa hormat","defiant","resistant","menantang","deficiency","lack","kekurangan","deficient","insufficient","kurang","deficit","shortfall","defisit","define","to state meaning","mendefinisikan","definite","certain","pasti","deflect","to change direction","membelokkan","deforest","to clear forests","menggunduli hutan","deform","to distort","mencacatkan","deformity","abnormality","cacat","defraud","to swindle","menipu","defray","to pay","membayar","defy","to resist","menentang","degeneracy","moral decline","kemunduran","degenerate","to worsen","merosot","degradation","humiliation","degradasi","degrade","to humiliate","merendahkan","degree","level; temperature unit","derajat","dehydrate","to remove water","menghilangkan air","deify","to worship as god","mendewakan","deity","god","dewa","deject","to sadden","menyedihkan","dejected","sad","sedih","dejection","sadness","kesedihan","delay","to postpone","menunda","delectable","delightful","menyenangkan","delectation","enjoyment","kesenangan","delegate","representative","delegasi","deleterious","harmful","berbahaya","deliberate","intentional","sengaja","delicacy","fine food","kelezatan","delicate","fragile","halus"];
+    pushEntries(day19Raw);
+    
+    // DAY 20 (1901-2000)
+    const day20Raw = ["delicious","tasty","lezat","delineate","to describe","menggambarkan","delinquent","lawbreaker","nakal","deliver","to transport","mengirim","deliverance","rescue","penyelamatan","delivery","act of delivering","pengiriman","delude","to deceive","menipu","deluge","flood","banjir","delusion","false belief","delusi","delusive","misleading","menyesatkan","demagnetize","to remove magnetism","menghilangkan magnet","demand","to require","menuntut","demanding","requiring effort","menuntut","demeanor","behavior","perilaku","demented","insane","gila","demerit","fault","kelemahan","demise","death","kematian","demobilize","to disband","membubarkan","demolish","to destroy","menghancurkan","demonstrable","provable","dapat dibuktikan","demonstrate","to show","mendemonstrasikan","demonstration","display","demonstrasi","demonstrative","expressive","ekspresif","demoralize","to dishearten","melemahkan moral","demur","to object","keberatan","demure","modest","rendah hati","demurrage","detention charge","biaya keterlambatan","demurrer","objection","keberatan","denizen","inhabitant","penduduk","denominate","to name","menamai","denomination","religious group; value","denominasi; nilai","denominator","divisor","penyebut","denote","to indicate","menunjukkan","denouement","final resolution","penyelesaian","denounce","to condemn","mengecam","dense","thick","padat","densely","thickly","dengan padat","dental","tooth-related","gigi","deny","to refuse","menyangkal","depart","to leave","berangkat","department","division","departemen","department store","retail store","toko serba ada","departure time","leaving time","waktu keberangkatan","depend on","to rely on","bergantung pada","depict","to portray","menggambarkan","depilatory","hair remover","penghilang bulu","deplete","to exhaust","menguras","deplorable","shameful","memprihatinkan","deplore","to regret","menyesali","deponent","witness","saksi","depopulate","to reduce population","mengurangi populasi","deport","to expel","mendeportasi","deportment","behavior","perilaku","depose","to remove from power","melengserkan","deposit","to put down","menyetor","depositary","trustee","penyimpan","deposition","testimony","keterangan","depositor","money depositor","penyimpan","depository","storage place","tempat penyimpanan","deprave","to corrupt","merusak moral","depravity","moral corruption","kebejatan","deprecate","to disapprove","tidak menyetujui","depreciate","to decrease in value","menyusut nilai","depreciation","value decrease","depresiasi","depredation","plundering","perampasan","depress","to sadden","menekan","depressed","very sad","depresi","depression","sadness; economic decline","depresi","deprivation","lack","kekurangan","deprive","to take away","mencabut","depute","to appoint","menunjuk","deputy","assistant","wakil","derange","to disturb","mengacaukan","derangement","disorder","kekacauan","derelict","abandoned","terlantar","deride","to mock","mengejek","derisible","laughable","menggelikan","derision","mockery","ejekan","derivation","origin","asal","derivative","derived","turunan","derive","to obtain","mendapatkan","dermatology","skin study","dermatologi","derrick","crane","derek","descendant","offspring","keturunan","descendent","descending","menurun","descent","downward movement","keturunan","description","account","deskripsi","descry","to catch sight of","melihat","desert","arid region; to abandon","gurun; meninggalkan","deserve","to merit","pantas","desiccant","drying agent","pengering","design","plan","desain","designate","to appoint","menunjuk","designated","appointed","ditunjuk","desire","wish","keinginan","desist","to cease","berhenti","desistance","cessation","penghentian","desktop","computer desk screen","desktop","desolate","deserted","sunyi","despair","hopelessness","putus asa"];
+    pushEntries(day20Raw);
+    
+    // DAY 21 (2001-2100)
+    const day21Raw = ["desperado","bold criminal","bandit","desperate","reckless due to hopelessness","putus asa","despicable","contemptible","tercela","despite","regardless of","meskipun","despond","to lose hope","putus asa","despondent","hopeless","putus asa","despot","tyrant","lalim","despotism","tyranny","kediktatoran","dessert","sweet course","makanan penutup","destination","endpoint","tujuan","destiny","fate","takdir","destitute","extremely poor","melarat","destroy","to ruin","menghancurkan","desultory","random","acak","detach","to separate","memisahkan","detail","specific fact","detail","detailed","thorough","rinci","detain","to hold back","menahan","detect","to discover","mendeteksi","deter","to discourage","mencegah","deteriorate","to worsen","memburuk","determinate","fixed","pasti","determination","resolve","tekad","determine","to decide","menentukan","deterrent","hindrance","pencegah","detest","to hate","membenci","detour","alternative route","jalan memutar","detract","to reduce value","mengurangi","detriment","harm","kerugian","detrude","to push down","mendorong ke bawah","develop","to grow","mengembangkan","developer","person who develops","pengembang","development","growth","perkembangan","deviate","to stray","menyimpang","device","tool","perangkat","devilry","wickedness","kejahatan","deviltry","mischief","kejahatan","devious","dishonest","licik","devise","to invent","merancang","devote","to dedicate","mengabdikan","devout","deeply religious","saleh","dexterity","skill","ketangkasan","diabolic","devilish","jahat","diacritical","distinguishing","diakritik","diagnose","to identify disease","mendiagnosis","diagnosis","identification of disease","diagnosis","dialect","regional language","dialek","dialectician","logician","ahli dialektika","dialogue","conversation","dialog","diaphanous","transparent","tembus pandang","diatomic","two atoms","diatomik","diatribe","angry criticism","kecaman","dichotomy","division into two","dikotomi","dictate","to speak for recording","mendikte","dictum","authoritative statement","pernyataan","didactic","instructional","bersifat mengajar","die","to stop living; cube","mati; dadu","dietary","related to diet","makanan","differ","to be different","berbeda","difference","dissimilarity","perbedaan","differentia","distinguishing feature","ciri pembeda","differential","difference","perbedaan","differentiate","to distinguish","membedakan","differently","in a different way","secara berbeda","diffidence","shyness","rasa malu","diffident","shy","pemalu","diffuse","to spread out","menyebar","diffusible","able to spread","dapat menyebar","diffusion","spreading","difusi","digest","to process food","mencerna","dignitary","important person","pejabat tinggi","digraph","two letters one sound","digraf","digress","to stray from topic","menyimpang","dilapidated","run-down","bobrok","dilate","to widen","melebar","dilatory","slow","lambat","dilemma","difficult choice","dilema","dilettante","amateur","amatir","diligence","hard work","ketekunan","diligent","hardworking","tekun","dilute","to thin","mengencerkan","dim","faintly lit","redup","diminish","to reduce","mengurangi","diminution","reduction","pengurangan","diminutive","tiny","kecil","dimly","faintly","dengan redup","dine","to eat dinner","makan malam","dining room","eating room","ruang makan","diphthong","two vowel sounds","diftong","diplomacy","negotiation skill","diplomasi","diplomat","official representative","diplomat","diplomatic","tactful","diplomatis","diplomatist","diplomat","diplomat","direct","to guide; straight","mengarahkan; langsung","direction","way","arah","directly","straight; immediately","langsung","director","manager","direktur","directory","listing","direktori","dirt","soil; filth","kotoran","dirty","unclean","kotor"];
+    pushEntries(day21Raw);
+
+    function getVocabByDay(day) {
+        if (day === 'day19') return fullVocab.slice(0, 100);
+        if (day === 'day20') return fullVocab.slice(100, 200);
+        return fullVocab.slice(200, 300);
+    }
+
+    // Pre-built questions based on the original file format (Part A, Part B, Part C from Week 7)
+    const practiceQuestions = {
+        day19: {
+            partA: [
+                { text: "The company made a difficult ______ after reviewing all the evidence.", options: ["decline", "decision", "debate", "default"], correct: "decision" },
+                { text: "The teacher asked students to ______ the hidden message in the code.", options: ["decorate", "declare", "decipher", "deduce"], correct: "decipher" },
+                { text: "Sales began to ______ after a new competitor entered the market.", options: ["dedicate", "decrease", "defend", "deflect"], correct: "decrease" },
+                { text: "The lawyer worked hard to ______ her client in court.", options: ["defeat", "debate", "defend", "delay"], correct: "defend" },
+                { text: "The government plans to ______ more land for national parks.", options: ["dedicate", "default", "define", "deduce"], correct: "dedicate" },
+                { text: "Many students joined the ______ about school uniforms.", options: ["debate", "degree", "delay", "deficit"], correct: "debate" },
+                { text: "The old bridge showed signs of ______ after years of neglect.", options: ["dedication", "decadence", "decay", "delicacy"], correct: "decay" },
+                { text: "The manager decided to ______ the meeting until next week.", options: ["dedicate", "defer", "define", "defend"], correct: "defer" },
+                { text: "The scientist was able to ______ a conclusion from the data.", options: ["deduct", "decorate", "deduce", "default"], correct: "deduce" },
+                { text: "The charity event raised money to ______ medical expenses.", options: ["defray", "degrade", "deify", "delay"], correct: "defray" },
+                { text: "The team remained ______ despite several setbacks.", options: ["dedicated", "defeated", "deficient", "dejected"], correct: "dedicated" },
+                { text: "The report revealed a budget ______ of two million dollars.", options: ["degree", "defect", "deficit", "deference"], correct: "deficit" },
+                { text: "The witness chose not to ______ any details to the media.", options: ["decipher", "declare", "decrease", "deduce"], correct: "declare" },
+                { text: "Several workers decided to ______ from the organization.", options: ["decorate", "defer", "defect", "deduce"], correct: "defect" },
+                { text: "A lack of funding may ______ the progress of the project.", options: ["delay", "dedicate", "defend", "define"], correct: "delay" },
+                { text: "The speaker gave a passionate ______ on environmental issues.", options: ["dedication", "debate", "declamation", "default"], correct: "declamation" },
+                { text: "The company tried to ______ customers with misleading advertisements.", options: ["deceive", "defend", "define", "decorate"], correct: "deceive" },
+                { text: "The museum will ______ the hall with traditional artwork.", options: ["dedicate", "decorate", "debate", "defer"], correct: "decorate" },
+                { text: "The athlete refused to ______ the rules of fair competition.", options: ["delay", "defend", "define", "defy"], correct: "defy" },
+                { text: "The school launched a campaign to ______ bullying.", options: ["decrease", "defeat", "decorate", "defer"], correct: "defeat" },
+                { text: "The manager asked staff to ______ their responsibilities clearly.", options: ["define", "defend", "deduce", "default"], correct: "define" },
+                { text: "The machine stopped working because of a manufacturing ______.", options: ["degree", "defect", "deficit", "deference"], correct: "defect" },
+                { text: "The company hopes to ______ losses through better planning.", options: ["defend", "decrease", "define", "deduce"], correct: "decrease" },
+                { text: "The lawyer requested a ______ of the hearing.", options: ["debate", "deduction", "delay", "dedication"], correct: "delay" },
+                { text: "The organization aims to ______ more resources to education.", options: ["dedicate", "defeat", "decipher", "decline"], correct: "dedicate" }
+            ],
+            partB: [
+                { text: "A formal discussion of opposing ideas.", options: ["Dedication", "Debate", "Degree", "Decay"], correct: "Debate" },
+                { text: "To discover the meaning of something difficult to understand.", options: ["Decrease", "Declare", "Decipher", "Defend"], correct: "Decipher" },
+                { text: "The process of becoming worse or breaking down over time.", options: ["Delay", "Decay", "Debate", "Degree"], correct: "Decay" },
+                { text: "A choice made after consideration.", options: ["Decision", "Deduction", "Defect", "Debate"], correct: "Decision" },
+                { text: "To state something officially or publicly.", options: ["Deduce", "Decorate", "Declare", "Delay"], correct: "Declare" },
+                { text: "To reach a conclusion through reasoning.", options: ["Deduce", "Defend", "Delay", "Defect"], correct: "Deduce" },
+                { text: "A fault or imperfection.", options: ["Deficit", "Deference", "Degree", "Defect"], correct: "Defect" },
+                { text: "The act of protecting someone or something.", options: ["Debate", "Defense/Defend", "Delay", "Decrease"], correct: "Defense/Defend" },
+                { text: "To postpone to a later time.", options: ["Delay", "Dedicate", "Deceive", "Define"], correct: "Delay" },
+                { text: "To mislead someone by giving false information.", options: ["Decorate", "Deduce", "Deceive", "Declare"], correct: "Deceive" },
+                { text: "Respectful submission to another person's judgment.", options: ["Defect", "Deficit", "Degree", "Deference"], correct: "Deference" },
+                { text: "A shortage, especially of money or resources.", options: ["Deficit", "Defect", "Delay", "Debate"], correct: "Deficit" },
+                { text: "To challenge openly or refuse to obey.", options: ["Define", "Defend", "Defy", "Delay"], correct: "Defy" },
+                { text: "To make something look more attractive.", options: ["Deduce", "Decorate", "Declare", "Defend"], correct: "Decorate" },
+                { text: "To assign for a special purpose.", options: ["Dedicate", "Decrease", "Delay", "Defect"], correct: "Dedicate" }
+            ],
+            wordBank: ["dedicate", "defect", "define", "deceive", "deficit", "defend", "decline", "decay", "debate", "delay", "deference", "decorate", "deduce", "defy", "decision"]
+        },
+        day20: {
+            partA: [
+                { text: "The manager had to ______ an important task to a team member.", options: ["dedicate", "delegate", "deceive", "defer"], correct: "delegate" },
+                { text: "The company announced its official product ______ at a global conference.", options: ["debut", "debate", "dearth", "decade"], correct: "debut" },
+                { text: "The old building continued to ______ after years without maintenance.", options: ["deceive", "decline", "decay", "deduct"], correct: "decay" },
+                { text: "The scientist was able to ______ the message written in ancient symbols.", options: ["decipher", "dedicate", "declare", "defend"], correct: "decipher" },
+                { text: "After a long discussion, the committee reached a final ______.", options: ["debate", "deficit", "decision", "dedication"], correct: "decision" },
+                { text: "The speaker chose to ______ the start of the event because many guests had not arrived.", options: ["defer", "define", "defend", "deceive"], correct: "defer" },
+                { text: "The company hopes to ______ costs by improving efficiency.", options: ["dedicate", "decrease", "decimate", "declare"], correct: "decrease" },
+                { text: "The teacher asked students to ______ the term before using it in a sentence.", options: ["define", "defeat", "defend", "decorate"], correct: "define" },
+                { text: "The lawyer worked hard to ______ her client in court.", options: ["deduct", "defend", "dedicate", "decline"], correct: "defend" },
+                { text: "The organization plans to ______ more funds to education programs.", options: ["defeat", "dedicate", "deduct", "defer"], correct: "dedicate" },
+                { text: "The athlete remained ______ to training despite many challenges.", options: ["decisive", "dedicated", "delicate", "deficient"], correct: "dedicated" },
+                { text: "The country faced a large budget ______ last year.", options: ["defect", "deficiency", "deficit", "default"], correct: "deficit" },
+                { text: "The witness refused to ______ any information about the incident.", options: ["declare", "decay", "deceive", "deduct"], correct: "declare" },
+                { text: "The company used advertisements to ______ customers about product quality.", options: ["define", "deceive", "dedicate", "debate"], correct: "deceive" },
+                { text: "The school decided to ______ the hall with student artwork.", options: ["defend", "dedicate", "decorate", "define"], correct: "decorate" },
+                { text: "The candidate remained ______ and refused to follow unfair instructions.", options: ["deficient", "defiant", "decisive", "delicate"], correct: "defiant" },
+                { text: "The charity event helped ______ the cost of medical treatment.", options: ["defray", "deflect", "default", "define"], correct: "defray" },
+                { text: "The company suffered a major ______ in profits during the recession.", options: ["degree", "debate", "decline", "dedication"], correct: "decline" },
+                { text: "The manager asked employees not to ______ company property.", options: ["deface", "define", "defer", "defend"], correct: "deface" },
+                { text: "The lawyer argued that the statement was ______ and damaged his client's reputation.", options: ["definite", "deliberate", "defamation", "decoration"], correct: "defamation" },
+                { text: "The military forces managed to ______ the enemy in a short battle.", options: ["dedicate", "defeat", "deduct", "defer"], correct: "defeat" },
+                { text: "The report revealed a serious ______ in staff training.", options: ["delicacy", "decade", "deficiency", "decision"], correct: "deficiency" },
+                { text: "The mayor officially ______ the opening of the new library.", options: ["declared", "deferred", "defended", "deceived"], correct: "declared" },
+                { text: "The company tried to ______ losses by reducing unnecessary spending.", options: ["decimate", "decrease", "defer", "deduce"], correct: "decrease" },
+                { text: "The detective was able to ______ who committed the crime from the evidence.", options: ["define", "dedicate", "deduct", "deduce"], correct: "deduce" }
+            ],
+            partB: [
+                { text: "A formal discussion of opposing views.", options: ["Decision", "Debate", "Dedication", "Decay"], correct: "Debate" },
+                { text: "To discover the meaning of something difficult to understand.", options: ["Defend", "Declare", "Decipher", "Deduct"], correct: "Decipher" },
+                { text: "The gradual breakdown or deterioration of something.", options: ["Decay", "Deficit", "Defect", "Decade"], correct: "Decay" },
+                { text: "A choice made after consideration.", options: ["Debate", "Dedication", "Decision", "Deficiency"], correct: "Decision" },
+                { text: "To state officially or publicly.", options: ["Define", "Declare", "Deceive", "Defer"], correct: "Declare" },
+                { text: "To assign for a particular purpose.", options: ["Dedicate", "Defeat", "Deduct", "Define"], correct: "Dedicate" },
+                { text: "A shortage, especially of money or resources.", options: ["Defect", "Deficit", "Default", "Degree"], correct: "Deficit" },
+                { text: "To protect someone or something from attack.", options: ["Delay", "Defend", "Decrease", "Debate"], correct: "Defend" },
+                { text: "To postpone until a later time.", options: ["Deflect", "Deceive", "Defer", "Declare"], correct: "Defer" },
+                { text: "To cause someone to believe something false.", options: ["Deceive", "Defend", "Deduct", "Debate"], correct: "Deceive" },
+                { text: "Respectful submission to another person's judgment.", options: ["Deficit", "Deference", "Defect", "Degree"], correct: "Deference" },
+                { text: "A fault or imperfection.", options: ["Deficiency", "Defeat", "Defect", "Defiance"], correct: "Defect" },
+                { text: "Open resistance to authority.", options: ["Defiance/Defiant", "Delay", "Deference", "Defamation"], correct: "Defiance/Defiant" },
+                { text: "To reduce the amount or size of something.", options: ["Decay", "Decrease", "Deduce", "Defer"], correct: "Decrease" },
+                { text: "Careful and serious consideration before acting.", options: ["Delicacy", "Deficiency", "Deliberate", "Decisive"], correct: "Deliberate" }
+            ],
+            wordBank: ["delegate", "decade", "decency", "delicate", "decorous", "default", "degree", "dejected", "deadly", "debut", "decrepit", "debonair", "deciduous", "degradation", "decisive"]
+        },
+        day21: {
+            partA: [
+                { text: "The doctor was able to ______ the illness after examining the patient.", options: ["devise", "diagnose", "detect", "determine"], correct: "diagnose" },
+                { text: "The company plans to ______ a new mobile application next month.", options: ["develop", "detach", "deter", "dilute"], correct: "develop" },
+                { text: "Her ______ helped her solve the puzzle quickly.", options: ["destiny", "dexterity", "dialogue", "detail"], correct: "dexterity" },
+                { text: "The police managed to ______ the suspect for questioning.", options: ["determine", "develop", "detain", "digest"], correct: "detain" },
+                { text: "The government hopes to ______ young people from smoking.", options: ["detect", "deter", "devise", "dilute"], correct: "deter" },
+                { text: "The manager asked employees not to ______ from company policies.", options: ["develop", "digest", "dilate", "deviate"], correct: "deviate" },
+                { text: "The old bridge began to ______ after years of neglect.", options: ["differ", "determine", "deteriorate", "detect"], correct: "deteriorate" },
+                { text: "She showed great ______ by completing the project before the deadline.", options: ["dialogue", "diligence", "destiny", "diagnosis"], correct: "diligence" },
+                { text: "The committee must ______ whether the proposal should be approved.", options: ["determine", "digest", "dilute", "differ"], correct: "determine" },
+                { text: "The engineer used a special ______ to measure temperature.", options: ["dialect", "device", "dilemma", "detail"], correct: "device" },
+                { text: "The team worked hard to ______ a solution to the problem.", options: ["devise", "deteriorate", "detach", "differ"], correct: "devise" },
+                { text: "The scientist discovered a clear ______ between the two groups.", options: ["destiny", "dialogue", "difference", "diagnosis"], correct: "difference" },
+                { text: "Many students face a ______ when choosing a university major.", options: ["detail", "dilemma", "destination", "dialect"], correct: "dilemma" },
+                { text: "The teacher asked students to ______ the information before the test.", options: ["digest", "dilute", "detect", "deter"], correct: "digest" },
+                { text: "The traveler finally reached his ______ after a long journey.", options: ["destiny", "destination", "detail", "dialogue"], correct: "destination" },
+                { text: "The company plans to ______ more resources to employee training.", options: ["devote", "deter", "detach", "dilute"], correct: "devote" },
+                { text: "The security system can ______ unusual activity immediately.", options: ["determine", "detect", "digest", "differ"], correct: "detect" },
+                { text: "The manager provided a ______ report of the project.", options: ["detailed", "desperate", "diplomatic", "diligent"], correct: "detailed" },
+                { text: "The artist decided to ______ from traditional painting styles.", options: ["develop", "digest", "deviate", "detect"], correct: "deviate" },
+                { text: "The solution must be ______ with water before use.", options: ["diluted", "diffused", "devised", "detailed"], correct: "diluted" },
+                { text: "The ambassador handled the conflict in a very ______ manner.", options: ["diligent", "diplomatic", "desperate", "devout"], correct: "diplomatic" },
+                { text: "The company continues to ______ new products every year.", options: ["develop", "differ", "deter", "detach"], correct: "develop" },
+                { text: "The workers showed strong ______ to complete the difficult task.", options: ["determination", "destination", "dilemma", "dialogue"], correct: "determination" },
+                { text: "The professor encouraged open ______ among students.", options: ["destination", "diagnosis", "dialogue", "dialect"], correct: "dialogue" },
+                { text: "The two sisters ______ greatly in personality.", options: ["digest", "determine", "differ", "devise"], correct: "differ" }
+            ],
+            partB: [
+                { text: "To identify a disease or problem after examination.", options: ["Detect", "Determine", "Diagnose", "Develop"], correct: "Diagnose" },
+                { text: "The place to which someone is going.", options: ["Destiny", "Destination", "Detail", "Dialogue"], correct: "Destination" },
+                { text: "Careful and persistent effort.", options: ["Diligence", "Dialogue", "Dexterity", "Difference"], correct: "Diligence" },
+                { text: "A difficult choice between two or more options.", options: ["Detail", "Dilemma", "Dialect", "Determination"], correct: "Dilemma" },
+                { text: "Skill in using the hands or mind.", options: ["Destination", "Dexterity", "Devotion", "Diffusion"], correct: "Dexterity" },
+                { text: "To discourage someone from doing something.", options: ["Deter", "Detect", "Digest", "Dilate"], correct: "Deter" },
+                { text: "To create or invent a plan or method.", options: ["Determine", "Devise", "Develop", "Detach"], correct: "Devise" },
+                { text: "A conversation between two or more people.", options: ["Difference", "Dialogue", "Dialect", "Diagnosis"], correct: "Dialogue" },
+                { text: "To become worse in condition.", options: ["Deteriorate", "Differ", "Dilute", "Digest"], correct: "Deteriorate" },
+                { text: "A regional variety of a language.", options: ["Dialogue", "Diagnosis", "Dialect", "Destiny"], correct: "Dialect" },
+                { text: "To make a final decision about something.", options: ["Detect", "Determine", "Deter", "Develop"], correct: "Determine" },
+                { text: "A small piece of information or fact.", options: ["Detail", "Difference", "Destination", "Diffusion"], correct: "Detail" },
+                { text: "To make a liquid weaker by adding water.", options: ["Digest", "Dilate", "Dilute", "Devote"], correct: "Dilute" },
+                { text: "To move away from a standard or expected path.", options: ["Detect", "Devise", "Devote", "Deviate"], correct: "Deviate" },
+                { text: "Relating to the management of relations between groups or countries.", options: ["Detailed", "Desperate", "Diplomatic", "Diligent"], correct: "Diplomatic" }
+            ],
+            wordBank: ["desperate", "despondent", "destiny", "destroy", "detriment", "direct", "direction", "director", "dirty", "devote", "diffuse", "diminish", "detailed", "determine", "decade"]
+        }
+    };
+
+    // Global state
+    let currentDay = 'day19';
+    let student = { name: '', id: '', program: '' };
+    let listTimerInterval = null, drillTimerInterval = null;
+    let listTime = 300;
+    let drillTime = 1500;
+    let drillActive = false;
+    let submitted = false;
+    let tabViolations = 0;
+    let selectedAnswers = {};
+    let currentQuestionsStore = { partA: [], partB: [], partC: [] };
+
+    const loginDiv = document.getElementById('loginPage');
+    const listDiv = document.getElementById('vocabListPage');
+    const drillDiv = document.getElementById('drillPage');
+    const summaryPopup = document.getElementById('summaryPopup');
+
+    function clearAllTimers() {
+        if (listTimerInterval) clearInterval(listTimerInterval);
+        if (drillTimerInterval) clearInterval(drillTimerInterval);
+    }
+
+    // Anti-cheat system
+    function initAntiCheat() {
+        window.addEventListener('blur', () => { if (drillActive && !submitted) handleViolation(); });
+        document.addEventListener('visibilitychange', () => { if (document.hidden && drillActive && !submitted) handleViolation(); });
+        document.addEventListener('contextmenu', e => e.preventDefault());
+        document.addEventListener('keydown', (e) => {
+            if (drillActive && !submitted && (e.key === 'PrintScreen' || (e.ctrlKey && (e.key === 'p' || e.key === 's')))) {
+                e.preventDefault();
+                alert("⚠️ Screenshot/print actions are disabled during the drill.");
+            }
+        });
+        let resizeCount = 0;
+        window.addEventListener('resize', () => {
+            if (drillActive && !submitted && window.innerWidth < 800) {
+                resizeCount++;
+                if (resizeCount === 1) alert("⚠️ Please maintain full window for the exam.");
+                else if (resizeCount >= 2) handleViolation();
+            }
+        });
+    }
+
+    function handleViolation() {
+        tabViolations++;
+        if (tabViolations === 1) alert("⚠️ WARNING: Leaving the drill page is prohibited. Next violation will auto-submit.");
+        else if (tabViolations >= 2) {
+            alert("❌ FORCE SUBMISSION: You violated the policy. Test is auto-submitted.");
+            forceSubmitDrill();
+        }
+    }
+
+    function forceSubmitDrill() {
+        if (submitted) return;
+        if (drillTimerInterval) clearInterval(drillTimerInterval);
+        submitted = true;
+        drillActive = false;
+        gatherAndShowSummary();
+    }
+
+    document.getElementById('startBtn').addEventListener('click', () => {
+        const name = document.getElementById('studentName').value.trim();
+        const id = document.getElementById('studentId').value.trim();
+        const prog = document.getElementById('studyProgram').value.trim();
+        if (!name || !id || !prog) { alert("Please fill all fields."); return; }
+        student = { name, id, program: prog };
+        currentDay = document.getElementById('daySelect').value;
+        loginDiv.classList.add('hidden');
+        listDiv.classList.remove('hidden');
+        renderVocabList();
+        startListTimer();
+    });
+
+    function renderVocabList() {
+        const vocab = getVocabByDay(currentDay);
+        const container = document.getElementById('vocabListContainer');
+        container.innerHTML = '';
+        let dayLabel = currentDay.toUpperCase();
+        document.getElementById('listDayLabel').innerText = dayLabel;
+        vocab.forEach(v => {
+            const div = document.createElement('div'); div.className = 'vocab-item';
+            div.innerHTML = `<div class="vocab-word">${v.word}</div><div>📖 ${v.eng} &nbsp;—&nbsp; 🇮🇩 ${v.ind}</div>`;
+            container.appendChild(div);
+        });
+    }
+
+    function startListTimer() {
+        if (listTimerInterval) clearInterval(listTimerInterval);
+        listTimerInterval = setInterval(() => {
+            if (listTime <= 0) {
+                clearInterval(listTimerInterval);
+                alert("Time for vocabulary review finished! Moving to drill.");
+                proceedToDrill();
+            } else {
+                listTime--;
+                let mins = Math.floor(listTime / 60);
+                let secs = listTime % 60;
+                document.getElementById('listTimer').innerText = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            }
+        }, 1000);
+    }
+
+    document.getElementById('proceedToDrillBtn').addEventListener('click', () => {
+        if (listTimerInterval) clearInterval(listTimerInterval);
+        proceedToDrill();
+    });
+
+    function shuffleArray(arr) {
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+    }
+
+    function proceedToDrill() {
+        listDiv.classList.add('hidden');
+        drillDiv.classList.remove('hidden');
+        buildDrillQuestions();
+        startDrillTimer();
+        drillActive = true;
+        submitted = false;
+        tabViolations = 0;
+    }
+
+    function buildDrillQuestions() {
+        const dayData = practiceQuestions[currentDay];
+        if (!dayData) return;
+        
+        const shuffledPartA = shuffleArray([...dayData.partA]);
+        const shuffledPartB = shuffleArray([...dayData.partB]);
+        const wordBankList = shuffleArray([...dayData.wordBank]);
+        
+        currentQuestionsStore = {
+            partA: shuffledPartA.map(q => q.text),
+            partB: shuffledPartB.map(q => q.text),
+            partC: []
+        };
+        
+        const container = document.getElementById('drillQuestionsContainer');
+        container.innerHTML = '';
+        selectedAnswers = {};
+        
+        const titleA = document.createElement('h3'); titleA.className = 'section-title'; titleA.innerText = 'Part A: Fill in the blanks (Questions 1-25)';
+        container.appendChild(titleA);
+        
+        shuffledPartA.forEach((q, idx) => {
+            const qDiv = document.createElement('div'); qDiv.className = 'question-card';
+            qDiv.innerHTML = `
+                <div class="question-text">${idx + 1}. ${q.text}</div>
+                <div class="options">
+                    ${q.options.map((opt, optIdx) => `<div class="option"><label><input type="radio" name="q_partA_${idx}" value="${opt}"> ${opt}</label></div>`).join('')}
+                </div>`;
+            container.appendChild(qDiv);
+            const radios = qDiv.querySelectorAll('input');
+            radios.forEach(radio => radio.addEventListener('change', (e) => {
+                selectedAnswers[`partA_${idx}`] = e.target.value;
+            }));
+        });
+        
+        const titleB = document.createElement('h3'); titleB.className = 'section-title'; titleB.innerText = 'Part B: Choose the correct definition (Questions 26-40)';
+        container.appendChild(titleB);
+        
+        shuffledPartB.forEach((q, idx) => {
+            const qDiv = document.createElement('div'); qDiv.className = 'question-card';
+            qDiv.innerHTML = `
+                <div class="question-text">${26 + idx}. ${q.text}</div>
+                <div class="options">
+                    ${q.options.map((opt, optIdx) => `<div class="option"><label><input type="radio" name="q_partB_${idx}" value="${opt}"> ${opt}</label></div>`).join('')}
+                </div>`;
+            container.appendChild(qDiv);
+            const radios = qDiv.querySelectorAll('input');
+            radios.forEach(radio => radio.addEventListener('change', (e) => {
+                selectedAnswers[`partB_${idx}`] = e.target.value;
+            }));
+        });
+        
+        const bankDiv = document.createElement('div'); bankDiv.className = 'wordbank-box';
+        bankDiv.innerHTML = `<strong>📦 WORD BANK (For questions 41-50):</strong><br/>` + wordBankList.map(w => `<span class="wordbank-word">${w}</span>`).join('');
+        container.appendChild(bankDiv);
+        
+        const titleC = document.createElement('h3'); titleC.className = 'section-title'; titleC.innerText = 'Part C: Fill in the blanks using the Word Bank (Questions 41-50)';
+        container.appendChild(titleC);
+        
+        const partCSentences = {
+            day19: [
+                "The lawyer will ______ the accused during the trial.",
+                "The committee reached a final ______ after several meetings.",
+                "The old building began to ______ because it was not maintained.",
+                "The company faced a budget ______ this year.",
+                "Students should ______ key terms before writing an essay.",
+                "The mayor plans to ______ the new community center to local volunteers.",
+                "The sales figures continued to ______ during the economic downturn.",
+                "The witness tried to ______ investigators by giving false information.",
+                "The teacher encouraged students to ______ unreasonable rules respectfully.",
+                "The event was ______ because of severe weather conditions."
+            ],
+            day20: [
+                "The old man looked ______ after years of illness.",
+                "The company will ______ on its loan if it cannot make the payment.",
+                "The fashion designer made her ______ at Paris Fashion Week.",
+                "The manager remained calm and ______ during the negotiation.",
+                "Many trees in this region are ______ and lose their leaves every year.",
+                "The team felt ______ after losing the championship match.",
+                "The project leader made a ______ choice that solved the problem quickly.",
+                "Everyone should show basic ______ when speaking to others.",
+                "The museum displayed a rare culinary ______ from the 18th century.",
+                "The committee spent weeks in ______ discussion before approving the proposal."
+            ],
+            day21: [
+                "The company president serves as the managing ______ of the organization.",
+                "Please follow the ______ given on the map.",
+                "The flood threatened to ______ several homes near the river.",
+                "The workers became ______ after hearing the factory would close.",
+                "The team hopes to ______ costs through better planning.",
+                "The project required a ______ analysis of customer needs.",
+                "The volunteers ______ their weekends to helping the community.",
+                "The smell began to ______ throughout the entire building.",
+                "The drought left farmers ______ for rain.",
+                "Many people believe hard work influences their ______."
+            ]
+        };
+        
+        const sentences = partCSentences[currentDay] || partCSentences.day19;
+        const shuffledSentences = shuffleArray([...sentences]);
+        currentQuestionsStore.partC = shuffledSentences;
+        
+        shuffledSentences.forEach((sentence, idx) => {
+            const fbDiv = document.createElement('div'); fbDiv.className = 'question-card';
+            fbDiv.innerHTML = `
+                <div class="question-text">${41 + idx}. ${sentence}</div>
+                <input type="text" placeholder="Type a word from the Word Bank above" data-fb-idx="${idx}" style="width:100%; background:#0a0e1a; border:1px solid #3a4468; padding:12px; border-radius:16px;">`;
+            const inputField = fbDiv.querySelector('input');
+            inputField.addEventListener('input', (e) => { selectedAnswers[`partC_${idx}`] = e.target.value.trim(); });
+            container.appendChild(fbDiv);
+        });
+    }
+
+    function startDrillTimer() {
+        if (drillTimerInterval) clearInterval(drillTimerInterval);
+        drillTimerInterval = setInterval(() => {
+            if (drillTime <= 0) {
+                clearInterval(drillTimerInterval);
+                if (!submitted) { alert("⏰ Time's up! Auto-submitting."); forceSubmitDrill(); }
+            } else {
+                drillTime--;
+                let mins = Math.floor(drillTime / 60);
+                let secs = drillTime % 60;
+                document.getElementById('drillTimer').innerText = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            }
+        }, 1000);
+    }
+
+    function gatherAndShowSummary() {
+        if (submitted) return;
+        submitted = true;
+        drillActive = false;
+        if (drillTimerInterval) clearInterval(drillTimerInterval);
+        
+        let summaryHtml = `<div class="print-pattern">
+            <h3>📋 ANSWER SUMMARY — ${student.name} (${student.id})</h3>
+            <p><strong>Program:</strong> ${student.program} | <strong>Day:</strong> ${currentDay.toUpperCase()} | <strong>Submitted:</strong> ${new Date().toLocaleString()}</p>
+            <hr>
+            <h4>Part A: Fill in the blanks (Questions 1-25)</h4>`;
+        
+        for (let i = 0; i < 25; i++) {
+            let ans = selectedAnswers[`partA_${i}`] || "(not answered)";
+            let questionText = currentQuestionsStore.partA[i] || `Question ${i+1}`;
+            summaryHtml += `<div class="summary-question"><strong>Q${i+1}:</strong> ${questionText}<br><div class="summary-answer">📝 Your answer: ${ans}</div></div>`;
+        }
+        
+        summaryHtml += `<hr><h4>Part B: Choose the correct definition (Questions 26-40)</h4>`;
+        for (let i = 0; i < 15; i++) {
+            let ans = selectedAnswers[`partB_${i}`] || "(not answered)";
+            let questionText = currentQuestionsStore.partB[i] || `Definition ${i+1}`;
+            summaryHtml += `<div class="summary-question"><strong>Q${26 + i}:</strong> ${questionText}<br><div class="summary-answer">📝 Your answer: ${ans}</div></div>`;
+        }
+        
+        summaryHtml += `<hr><h4>Part C: Fill in the blank using Word Bank (Questions 41-50)</h4>`;
+        for (let i = 0; i < 10; i++) {
+            let ans = selectedAnswers[`partC_${i}`] || "(empty)";
+            let questionText = currentQuestionsStore.partC[i] || `Fill in the blank ${i+1}`;
+            summaryHtml += `<div class="summary-question"><strong>Q${41 + i}:</strong> ${questionText}<br><div class="summary-answer">📝 Your answer: ${ans}</div></div>`;
+        }
+        
+        summaryHtml += `<hr><footer style="margin-top:20px;">VOCAB DRILL — Week 7 Official Assessment Report | Generated from secure testing platform</footer></div>`;
+        document.getElementById('summaryContent').innerHTML = summaryHtml;
+        summaryPopup.classList.remove('hidden');
+    }
+
+    document.getElementById('submitDrillBtn').addEventListener('click', () => {
+        if (submitted) { alert("Already submitted."); return; }
+        gatherAndShowSummary();
+    });
+    document.getElementById('closeSummaryBtn').addEventListener('click', () => summaryPopup.classList.add('hidden'));
+    document.getElementById('printSummaryBtn').addEventListener('click', () => {
+        const printContents = document.getElementById('summaryContent').innerHTML;
+        const win = window.open();
+        win.document.write(`
+            <html><head><title>Vocab Drill Summary - ${student.name}</title>
+            <style>
+                body { font-family: 'Courier New', monospace, sans-serif; padding: 2rem; background: white; }
+                .print-pattern { background: repeating-linear-gradient(45deg, #f4f6fc 0px, #f4f6fc 3px, #fff 3px, #fff 15px); padding: 20px; border-radius: 12px; }
+                h3, h4 { color: #1e293b; }
+                .summary-question { margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid #e2e8f0; }
+                .summary-answer { margin-left: 20px; color: #475569; }
+                strong { color: #0f172a; }
+            </style>
+            </head><body>${printContents}</body></html>
+        `);
+        win.document.close();
+        win.print();
+    });
+    initAntiCheat();
+</script>
+</body>
+</html>
